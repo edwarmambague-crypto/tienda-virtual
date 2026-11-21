@@ -1,6 +1,6 @@
 import { orders as seedOrders } from '../data/orders';
 import { products } from '../data/products';
-import type { CreateOrderInput, Order, OrderItem } from '../types';
+import type { CreateOrderInput, Order, OrderItem, OrderStatus } from '../types';
 import { delay } from './delay';
 
 const STORAGE_KEY = 'tienda-orders';
@@ -78,4 +78,39 @@ export async function getOrdersByUser(userId: number): Promise<Order[]> {
 export async function getAllOrders(): Promise<Order[]> {
   await delay(400);
   return [...orders];
+}
+
+// Transiciones válidas: un pedido no puede "saltar" a cualquier estado
+const allowedTransitions: Record<OrderStatus, OrderStatus[]> = {
+  pendiente: ['enviado', 'cancelado'],
+  enviado: ['entregado'],
+  entregado: [],
+  cancelado: [],
+};
+
+export function getAllowedTransitions(status: OrderStatus): OrderStatus[] {
+  return allowedTransitions[status];
+}
+
+export async function updateOrderStatus(orderId: number, newStatus: OrderStatus): Promise<Order> {
+  await delay(500);
+  const order = orders.find((o) => o.id === orderId);
+  if (!order) throw new Error('El pedido no existe.');
+
+  if (!allowedTransitions[order.status].includes(newStatus)) {
+    throw new Error(`No se puede pasar de "${order.status}" a "${newStatus}".`);
+  }
+
+  // Si se cancela, el stock se devuelve al inventario
+  if (newStatus === 'cancelado') {
+    for (const item of order.items) {
+      const product = products.find((p) => p.id === item.productId);
+      if (product) product.stock += item.quantity;
+    }
+  }
+
+  const updated: Order = { ...order, status: newStatus };
+  orders = orders.map((o) => (o.id === orderId ? updated : o));
+  save();
+  return updated;
 }

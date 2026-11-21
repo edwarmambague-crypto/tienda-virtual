@@ -144,3 +144,28 @@ img {
   font-size: 0.85rem;
   font-weight: 400;
 }
+
+.badge-info { background: #dbeafe; color: #1d4ed8; }
+
+.data-table-wrapper {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-surface);
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.7rem 0.8rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.data-table th {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
