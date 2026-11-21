@@ -49,3 +49,15 @@ export interface CartItem {
   product: Product;
   quantity: number;
 }
+
+export interface ShippingData {
+  shippingName: string;
+  shippingAddress: string;
+  shippingCity: string;
+  shippingPhone: string;
+}
+
+export interface CreateOrderInput extends ShippingData {
+  userId: number;
+  items: { productId: number; quantity: number }[]; // sin precios: solo ids y cantidades
+}
