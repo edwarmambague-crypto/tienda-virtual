@@ -1,7 +1,7 @@
 # Mi Tienda · Tienda virtual de catálogo y pedidos
 
 Proyecto final de **Desarrollo de Aplicaciones Web**.
-Autor: [Tu nombre]
+Autores: José David Miranda, Jhonatan Steven Garzon  y Edwar Andrés Mambagüe
 
 ## Descripción
 
