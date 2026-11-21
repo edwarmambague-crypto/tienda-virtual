@@ -9,8 +9,13 @@ import StockBadge from '../components/StockBadge';
 import QuantitySelector from '../components/QuantitySelector';
 import './ProductDetail.css';
 
+// El "key" reinicia todo el estado al cambiar de producto
 export default function ProductDetail() {
   const { id } = useParams();
+  return <ProductDetailContent key={id} id={Number(id)} />;
+}
+
+function ProductDetailContent({ id }: { id: number }) {
   const { addItem } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
   const [categoryName, setCategoryName] = useState('');
@@ -20,11 +25,8 @@ export default function ProductDetail() {
 
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
-    setQuantity(1);
-    setAdded(false);
 
-    Promise.all([getProductById(Number(id)), getCategories()])
+    Promise.all([getProductById(id), getCategories()])
       .then(([p, cats]) => {
         if (cancelled) return;
         setProduct(p ?? null);

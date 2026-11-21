@@ -69,7 +69,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       removeItem,
       clearCart,
     }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
     [items]
   );
 

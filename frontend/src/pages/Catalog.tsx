@@ -20,6 +20,13 @@ export default function Catalog() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Cambia los filtros y activa el estado de carga desde el evento (no desde el efecto)
+  const updateFilters = (next: FilterValues) => {
+    setLoading(true);
+    setError(null);
+    setFilters(next);
+  };
+
   // Categorías: se cargan una sola vez
   useEffect(() => {
     getCategories().then(setCategories).catch(() => setCategories([]));
@@ -28,8 +35,6 @@ export default function Catalog() {
   // Productos: se recargan cada vez que cambian los filtros
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
-    setError(null);
 
     getProducts({
       search: filters.search.trim() || undefined,
@@ -59,8 +64,8 @@ export default function Catalog() {
       <ProductFilters
         values={filters}
         categories={categories}
-        onChange={setFilters}
-        onClear={() => setFilters(emptyFilters)}
+        onChange={updateFilters}
+        onClear={() => updateFilters(emptyFilters)}
       />
 
       {loading && <Spinner text="Cargando productos..." />}
@@ -70,7 +75,7 @@ export default function Catalog() {
       {!loading && !error && products.length === 0 && (
         <div className="state-box">
           <p>No encontramos productos con esos filtros.</p>
-          <button className="btn btn-outline" onClick={() => setFilters(emptyFilters)}>
+          <button className="btn btn-outline" onClick={() => updateFilters(emptyFilters)}>
             Limpiar filtros
           </button>
         </div>
