@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
+import { AuthProvider } from './context/AuthContext';
 import Layout from './components/Layout';
+import ProtectedRoute from './components/ProtectedRoute';
 import Catalog from './pages/Catalog';
 import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
@@ -12,21 +14,33 @@ import NotFound from './pages/NotFound';
 
 export default function App() {
   return (
-    <CartProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<Catalog />} />
-            <Route path="/producto/:id" element={<ProductDetail />} />
-            <Route path="/carrito" element={<Cart />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/mis-pedidos" element={<MyOrders />} />
-            <Route path="/admin/pedidos" element={<AdminOrders />} />
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </CartProvider>
+    <AuthProvider>
+      <CartProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route element={<Layout />}>
+              {/* Públicas */}
+              <Route path="/" element={<Catalog />} />
+              <Route path="/producto/:id" element={<ProductDetail />} />
+              <Route path="/carrito" element={<Cart />} />
+              <Route path="/login" element={<Login />} />
+
+              {/* Requieren sesión */}
+              <Route element={<ProtectedRoute />}>
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/mis-pedidos" element={<MyOrders />} />
+              </Route>
+
+              {/* Solo administrador */}
+              <Route element={<ProtectedRoute role="admin" />}>
+                <Route path="/admin/pedidos" element={<AdminOrders />} />
+              </Route>
+
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </CartProvider>
+    </AuthProvider>
   );
 }
