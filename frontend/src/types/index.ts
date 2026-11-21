@@ -44,3 +44,8 @@ export interface Order {
   total: number;
   items: OrderItem[];
 }
+
+export interface CartItem {
+  product: Product;
+  quantity: number;
+}
